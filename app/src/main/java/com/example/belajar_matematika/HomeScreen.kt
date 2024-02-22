@@ -78,7 +78,9 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(35.dp))
 
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                          navController.navigate(route = Screen.Guru.route)
+                },
                 shape = RoundedCornerShape(20.dp),
                 modifier = Modifier
                     .width(247.dp)
