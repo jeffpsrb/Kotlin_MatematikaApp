@@ -3,17 +3,17 @@ package com.example.belajar_matematika
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.belajar_matematika.role_guru.Calculator
+import androidx.navigation.navArgument
+import com.example.belajar_matematika.role_guru.CalculatorScreen
 import com.example.belajar_matematika.role_guru.CalculatorViewModel
 
 @Composable
 fun SetUpNavGraph(
     navController:NavHostController
 ) {
-    val viewModel = viewModel<CalculatorViewModel>()
-    val state = viewModel.state
     NavHost(
         navController = navController,
         startDestination = Screen.Home.route
@@ -29,14 +29,21 @@ fun SetUpNavGraph(
             SiswaScreen(navController = navController)
         }
         composable(
-            route = Screen.Canvas.route
-        ) {
-            CanvasSiswa()
+            route = Screen.Canvas.route + "/{result}",
+            arguments = listOf(
+                navArgument("result") {
+                    type = NavType.StringType
+                }
+            )
+        ) { navBackStackEntry ->
+            val result = navBackStackEntry.arguments?.getString("result") ?: ""
+            CanvasSiswa(result = result)
         }
         composable(
             route = Screen.Guru.route
         ) {
-            Calculator(state = state, onAction = viewModel::onAction)
+            val viewModel = viewModel<CalculatorViewModel>()
+            CalculatorScreen(viewModel = viewModel, navController = navController)
         }
     }
 }
