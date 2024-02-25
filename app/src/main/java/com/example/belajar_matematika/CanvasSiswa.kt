@@ -25,12 +25,15 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
+import com.example.belajar_matematika.role_guru.CalculatorViewModel
 
 data class Line(
     val start: Offset,
@@ -42,7 +45,10 @@ data class Line(
 
 
 @Composable
-fun CanvasSiswa() {
+fun CanvasSiswa(
+    result: String,
+) {
+
     val lines = remember {
         mutableStateListOf<Line>()
     }
@@ -53,7 +59,7 @@ fun CanvasSiswa() {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Gambar Angka",
+            text = "Gambar Angka : $result",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White,
@@ -147,8 +153,3 @@ fun CanvasSiswa() {
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun CanvasSiswaPrev() {
-    CanvasSiswa()
-}
