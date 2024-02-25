@@ -1,10 +1,10 @@
 package com.example.belajar_matematika.role_guru
 
-sealed class CalculatorActions {
-    data class Number (val number: Int) : CalculatorActions()
-    object Clear : CalculatorActions()
-    object Delete : CalculatorActions()
-    object Decimal : CalculatorActions()
-    object Calculate : CalculatorActions()
-    data class Operation(val operation: CalculatorOperation): CalculatorActions()
+sealed class CalculatorAction {
+    data class Number(val number: Int): CalculatorAction()
+    object Clear: CalculatorAction()
+    object Delete: CalculatorAction()
+    data class Operation(val operation: CalculatorOperation): CalculatorAction()
+    object Calculate: CalculatorAction()
+    object Decimal: CalculatorAction()
 }
