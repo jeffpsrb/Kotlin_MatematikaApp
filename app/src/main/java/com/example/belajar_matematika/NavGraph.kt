@@ -28,6 +28,11 @@ fun SetUpNavGraph(
             SiswaScreen(navController = navController)
         }
         composable(
+            route = Screen.Canvas.route
+        ) {
+            CanvasSiswa()
+        }
+        composable(
             route = Screen.Guru.route
         ) {
             val calculatorViewModel = viewModel<CalculatorViewModel>()
