@@ -29,7 +29,7 @@ class CalculatorViewModel: ViewModel()  {
 
     //membuat function untuk membersihkan seluruh input
     private fun clearInputChange() {
-        calculatorState.apply { calculatorState = copy(input = " ") }
+        calculatorState.apply { calculatorState = copy(input = "") }
     }
 
     //Operasi Aritmatika
@@ -52,7 +52,7 @@ class CalculatorViewModel: ViewModel()  {
     }
 
     private fun outputConversion(input: String): String {
-        var result = " "
+        var result = ""
         val inputString = ArrayDeque<Char>()
 
         for(n in input) {
@@ -66,8 +66,11 @@ class CalculatorViewModel: ViewModel()  {
                 }
                 inputString.pop()
             } else {
-                while (!inputString.isEmpty() && operatorLevel(n) <= operatorLevel(inputString.peek())) {
-                    result+= "${inputString.pop()}"
+                while (!inputString.isEmpty() && operatorLevel(n) <= operatorLevel(
+                        inputString.peek()
+                )
+                ) {
+                    result+= " ${inputString.pop()} "
                 }
                 inputString.push(n)
                 result += " "
@@ -104,20 +107,24 @@ class CalculatorViewModel: ViewModel()  {
         return arrayMember.toString()
     }
 
-    private fun evaluate(input: String): Int {
-        var inputString = " "
+    private fun evaluate(input: String): Int? {
+        var inputString = ""
         val stack = ArrayDeque<Double>()
 
         for (i in input) {
             if(notOperator(i) && i != ' ') {
                 inputString += i
-            } else if (!notOperator(i)) {
+            } else if (i == ' ' && inputString != "") {
+                stack.push(inputString.replace('n', '-').toDouble())
+                inputString = ""
+            }
+            else if (!notOperator(i)) {
                 val number1 = stack.pop()
                 val number2 = stack.pop()
 
                 when (i) {
                     '+' -> stack.push(number2!! + number1!!)
-                    '-' -> stack.push(number2!! - number2!!)
+                    '-' -> stack.push(number2!! - number1!!)
                     '*' -> stack.push(number2!! * number1!!)
                     '/' -> stack.push(number2!! / number1!!)
                     '^' -> stack.push(number2!!.pow(number1!!.toDouble()))

@@ -29,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.belajar_matematika.ui.theme.GuruColor
+import com.example.belajar_matematika.ui.theme.SecondaryColor
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,12 +57,11 @@ fun SiswaScreen(
             onValueChange = { identitasSiswa = it},
             singleLine = true,
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                unfocusedBorderColor = colorResource(id = R.color.primary),
-                focusedBorderColor = colorResource(id = R.color.primary),
+                unfocusedBorderColor = SecondaryColor,
+                focusedBorderColor = SecondaryColor,
                 containerColor = Color.Transparent,
                 textColor = Color.Black
             ),
-//            isError = identitasSiswa.isEmpty(),
             modifier = Modifier
                 .padding(start = 50.dp, top = 2.dp)
                 .width(311.dp),
@@ -98,7 +99,7 @@ fun SiswaScreen(
                     .width(81.dp)
                     .height(34.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(id = R.color.primary),
+                    containerColor = GuruColor,
                     contentColor = Color.White
                 )
 

@@ -27,9 +27,12 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.belajar_matematika.ui.theme.GuruColor
+import com.example.belajar_matematika.ui.theme.SecondaryColor
 
 data class Line(
     val start: Offset,
@@ -42,21 +45,19 @@ data class Line(
 
 @Composable
 fun CanvasSiswa() {
-
     val lines = remember {
         mutableStateListOf<Line>()
     }
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .background(color = colorResource(id = R.color.primary)),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = "Gambar Angka ",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White,
+            color = Color.Black,
             modifier = Modifier
                 .padding(bottom = 12.dp)
                 .align(Alignment.CenterHorizontally)
@@ -114,7 +115,7 @@ fun CanvasSiswa() {
                     .width(85.dp)
                     .height(47.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(id = R.color.secondary),
+                    containerColor = SecondaryColor,
                     contentColor = Color.White
                 )
 
@@ -132,7 +133,7 @@ fun CanvasSiswa() {
                     .width(98.dp)
                     .height(47.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(id = R.color.secondary),
+                    containerColor = GuruColor,
                     contentColor = Color.White
                 )
 
@@ -144,6 +145,11 @@ fun CanvasSiswa() {
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun CanvasSiswaPrev() {
+    CanvasSiswa()
+}
 
 
 
