@@ -23,6 +23,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.belajar_matematika.ui.theme.GuruColor
+import com.example.belajar_matematika.ui.theme.SecondaryColor
+import com.example.belajar_matematika.ui.theme.SiswaColor
 
 @Composable
 fun HomeScreen(
@@ -40,7 +43,7 @@ fun HomeScreen(
 
         ) {
             Image(
-                painter = painterResource(id = R.drawable.rectangle_1),
+                painter = painterResource(id = R.drawable.component),
                 contentDescription = "rectangle 1",
                 modifier = Modifier
 
@@ -64,7 +67,7 @@ fun HomeScreen(
                     .width(247.dp)
                     .height(52.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(id = R.color.primary),
+                    containerColor = SiswaColor,
                     contentColor = Color.White
                 )
 
@@ -79,14 +82,14 @@ fun HomeScreen(
 
             Button(
                 onClick = {
-
+                          navController.navigate(route = Screen.Guru.route)
                 },
                 shape = RoundedCornerShape(20.dp),
                 modifier = Modifier
                     .width(247.dp)
                     .height(52.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(id = R.color.secondary),
+                    containerColor = SecondaryColor,
                     contentColor = Color.White
                 )
             ) {
@@ -105,7 +108,7 @@ fun HomeScreen(
             verticalAlignment = Alignment.Bottom
         ) {
             Image(
-                painter = painterResource(id = R.drawable.rectangle_2),
+                painter = painterResource(id = R.drawable.component),
                 contentDescription = "rectangle 2",
                 modifier = Modifier
                     .width(196.dp)
