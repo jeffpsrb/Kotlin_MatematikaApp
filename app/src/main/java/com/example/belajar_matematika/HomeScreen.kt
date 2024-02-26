@@ -79,7 +79,7 @@ fun HomeScreen(
 
             Button(
                 onClick = {
-                          navController.navigate(route = Screen.Guru.route)
+
                 },
                 shape = RoundedCornerShape(20.dp),
                 modifier = Modifier
