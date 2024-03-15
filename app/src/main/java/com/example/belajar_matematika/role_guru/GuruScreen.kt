@@ -1,5 +1,7 @@
 package com.example.belajar_matematika.role_guru
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,8 +10,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,9 +21,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.belajar_matematika.Screen
 import com.example.belajar_matematika.ui.theme.GuruColor
 import com.example.belajar_matematika.ui.theme.SecondaryColor
 import com.example.belajar_matematika.ui.theme.SiswaColor
+import kotlinx.coroutines.launch
 
 
 //code ini adalah code untuk membuat tampilan dari fitur Role Guru
@@ -28,10 +36,15 @@ import com.example.belajar_matematika.ui.theme.SiswaColor
 @Composable
 fun RoleGuruScreen(
     modifier: Modifier,
-    calculatorViewModel: CalculatorViewModel?
+    calculatorViewModel: CalculatorViewModel?,
+    navController: NavController
 ) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     //memanggil CalculatorState yang berfungsi merecord segala perubahan di input atau di output
     var calculatorState = calculatorViewModel?.calculatorState
+    val input = calculatorState?.input ?: "0"
+    val result = calculatorState?.result ?: "0"
 
     ConstraintLayout(
         modifier = modifier
@@ -53,6 +66,9 @@ fun RoleGuruScreen(
             button9,
             buttonMultiply,
             spacer6,
+            spacer7,
+            buttonSubmit,
+            leaderboard
         ) = createRefs()
 
         // createRefs(): hanya dapat menampung 17 id sehingga jika lebih dari 17 maka harus membuat createRefs() baru
@@ -74,6 +90,7 @@ fun RoleGuruScreen(
             buttonGenerate,
             buttonDelete,
         ) = createRefs()
+
         val guidelineTop = createGuidelineFromTop(0.1f)
 
         //createHorizontalChain() : membuat elemen UI berjejer secara horizontal dengan parameter id elemen yang ingin dikenakan createHorizontalChain
@@ -114,6 +131,11 @@ fun RoleGuruScreen(
         createHorizontalChain(
             buttonDelete,
             buttonGenerate,
+            chainStyle = ChainStyle.SpreadInside
+        )
+        createHorizontalChain(
+            buttonSubmit,
+            leaderboard,
             chainStyle = ChainStyle.SpreadInside
         )
 
@@ -519,9 +541,68 @@ fun RoleGuruScreen(
                 }
         ) {
             calculatorViewModel?.onAction(CalculatorAction.Evaluate)
+
+        }
+        Spacer(
+            modifier = modifier
+                .height(20.dp)
+                .fillMaxWidth()
+                .constrainAs(spacer7) {
+                    top.linkTo(buttonDelete.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+        )
+        CalculatorButton(
+            symbols = "Submit",
+            colorBackground = SecondaryColor,
+            colorFont = SiswaColor,
+            modifier = modifier
+                .width(120.dp)
+                .constrainAs(buttonSubmit) {
+                    top.linkTo(spacer7.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+
+                }
+        ) {
+            scope.launch {
+                submitData(input, result, context)
+            }
+        }
+
+        CalculatorButton(
+            symbols = "Leaderboard",
+            colorBackground = SecondaryColor,
+            colorFont = SiswaColor,
+            modifier = modifier
+                .width(150.dp)
+                .constrainAs(leaderboard) {
+                    top.linkTo(buttonSubmit.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+
+                }
+        ) {
+            navController.navigate(route = Screen.Leaderboard.route)
+
         }
 
 
+    }
+}
+
+suspend fun submitData(question: String, true_answer: String, context: Context) {
+    try {
+        val response = ApiClient.apiService.dataGuru(GuruRequest(question, true_answer))
+        if (response.isSuccessful) {
+            val message = response.body()?.message ?: "Data Submited"
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, "failed", Toast.LENGTH_SHORT).show()
+        }
+    } catch (e: Exception) {
+        Toast.makeText(context, "Network error: ${e.message}", Toast.LENGTH_SHORT).show()
     }
 }
 
@@ -529,6 +610,6 @@ fun RoleGuruScreen(
 @Preview(showBackground = true)
 @Composable
 fun RoleGuruScreenPrev() {
-    RoleGuruScreen(modifier = Modifier, calculatorViewModel = CalculatorViewModel())
+    RoleGuruScreen(modifier = Modifier, calculatorViewModel = CalculatorViewModel(), rememberNavController())
 
 }

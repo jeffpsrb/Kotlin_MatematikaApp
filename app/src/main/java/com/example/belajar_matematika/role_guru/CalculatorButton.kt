@@ -39,7 +39,7 @@ fun CalculatorButton(
     ) {
         Text(text = symbols, 
             fontWeight = FontWeight.SemiBold, 
-            fontSize = 30.sp, 
+            fontSize = 20.sp,
             color = colorFont)
     }
 
