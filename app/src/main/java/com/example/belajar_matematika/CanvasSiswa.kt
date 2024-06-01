@@ -15,6 +15,7 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,9 +25,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -37,10 +41,12 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.belajar_matematika.ui.theme.GuruColor
 import com.example.belajar_matematika.ui.theme.SecondaryColor
 import kotlinx.coroutines.launch
@@ -58,24 +64,53 @@ data class Line(
 )
 
 
-
 @Composable
 fun CanvasSiswa(
-    navController: NavController,
-    identitas: String
+    identitas: String,
+    token: String,
+    navController: NavController
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val lines = remember {
         mutableStateListOf<Line>()
     }
+
+    var isDataSent by remember { mutableStateOf(false) }
+
+
     Column(
         modifier = Modifier
             .fillMaxSize(),
-        verticalArrangement = Arrangement.Center
+
     ) {
+        Column (
+            verticalArrangement = Arrangement.Top
+        ) {
+            Button(
+                onClick = {
+                    navController.navigate(Screen.Siswa.route)
+                },
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier
+                    .padding(start = 16.dp, top = 16.dp)
+                    .width(85.dp)
+                    .height(47.dp),
+
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = SecondaryColor,
+                    contentColor = Color.White
+                )
+
+
+            ) {
+                Text(text = "Back")
+            }
+
+        }
+        Spacer(modifier = Modifier.height(60.dp))
         Text(
-            text = "Gambar Angka $identitas ",
+            text = "Gambar Angka",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black,
@@ -146,25 +181,30 @@ fun CanvasSiswa(
 
             Button(
                 onClick = {
-                    val byteArray = convertCanvasToJpg(lines)
-//                        if (byteArray != null) {
-//                            // Jika berhasil, lakukan sesuatu dengan byteArray
-//                            saveImageToGallery(context, byteArray, "gambar_$identitas.jpg")
-//                        } else {
-//                            // Jika gagal, lakukan sesuatu dengan kesalahan
-//                            Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
-//                        }
-                    if(byteArray != null) {
-                        val imageMedia = "image/jpeg".toMediaTypeOrNull()
-                        val imageRequestBody = byteArray.toRequestBody(imageMedia)
-                        val identitasRequestBody = identitas.toRequestBody("text/plain".toMediaTypeOrNull())
-                        val imagePart = MultipartBody.Part.createFormData("image", "gambar_$identitas.jpg", imageRequestBody)
-                        scope.launch {
-                            submit(imagePart, identitasRequestBody, context)
-                        }
+                    if (!isDataSent) {
+                        val byteArray = convertCanvasToJpg(lines)
+    //                        if (byteArray != null) {
+    //                            // Jika berhasil, lakukan sesuatu dengan byteArray
+    //                            saveImageToGallery(context, byteArray, "gambar_$identitas.jpg")
+    //                        } else {
+    //                            // Jika gagal, lakukan sesuatu dengan kesalahan
+    //                            Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+    //                        }
+                        if(byteArray != null) {
+                            val imageMedia = "image/jpeg".toMediaTypeOrNull()
+                            val imageRequestBody = byteArray.toRequestBody(imageMedia)
+                            val identitasRequestBody = identitas.toRequestBody("text/plain".toMediaTypeOrNull())
+                            val imagePart = MultipartBody.Part.createFormData("image", "gambar_${identitas}_${token}.jpg", imageRequestBody)
+                            scope.launch {
+                                submit(imagePart, identitasRequestBody, context)
+                            }
+                            isDataSent = true
 
+                        } else {
+                            Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+                        }
                     } else {
-                        Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Data has been sent already", Toast.LENGTH_SHORT).show()
                     }
 
                 },
@@ -182,6 +222,8 @@ fun CanvasSiswa(
                 Text(text = "Submit")
             }
         }
+
+
 
     }
 }
@@ -312,11 +354,11 @@ fun saveImageToGallery(context: Context, byteArray: ByteArray, fileName: String)
 }
 
 
-//@Preview(showBackground = true)
-//@Composable
-//fun CanvasSiswaPrev() {
-//    CanvasSiswa(navController = rememberNavController(), identitas = )
-//}
+@Preview(showBackground = true)
+@Composable
+fun CanvasSiswaPrev() {
+    CanvasSiswa(identitas = "jeff", token = "tqyu5", navController = rememberNavController())
+}
 
 
 

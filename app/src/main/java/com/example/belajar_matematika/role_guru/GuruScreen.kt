@@ -16,17 +16,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.belajar_matematika.Screen
 import com.example.belajar_matematika.ui.theme.GuruColor
 import com.example.belajar_matematika.ui.theme.SecondaryColor
 import com.example.belajar_matematika.ui.theme.SiswaColor
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -37,7 +36,8 @@ import kotlinx.coroutines.launch
 fun RoleGuruScreen(
     modifier: Modifier,
     calculatorViewModel: CalculatorViewModel?,
-    navController: NavController
+    navController: NavController,
+    token: String
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -528,7 +528,7 @@ fun RoleGuruScreen(
             calculatorViewModel?.onAction(CalculatorAction.DeleteInput)
         }
         CalculatorButton(
-            symbols = "generate",
+            symbols = "Submit",
             colorBackground = SiswaColor,
             colorFont = Color.White,
             modifier = modifier
@@ -540,7 +540,18 @@ fun RoleGuruScreen(
 
                 }
         ) {
+
             calculatorViewModel?.onAction(CalculatorAction.Evaluate)
+
+            scope.launch {
+                // Menunggu sampai hasil dihitung selesai
+                delay(1000)
+                // Mendapatkan hasil yang sudah dihitung
+                val calculatedResult = calculatorViewModel?.calculatorState?.result ?: ""
+                // Mengirimkan hasil yang sudah dihitung ke server
+                submitData(token, input, calculatedResult, context)
+            }
+
 
         }
         Spacer(
@@ -554,7 +565,7 @@ fun RoleGuruScreen(
                 }
         )
         CalculatorButton(
-            symbols = "Submit",
+            symbols = "Back",
             colorBackground = SecondaryColor,
             colorFont = SiswaColor,
             modifier = modifier
@@ -566,9 +577,7 @@ fun RoleGuruScreen(
 
                 }
         ) {
-            scope.launch {
-                submitData(input, result, context)
-            }
+            navController.navigate(Screen.Token.route)
         }
 
         CalculatorButton(
@@ -580,7 +589,6 @@ fun RoleGuruScreen(
                 .constrainAs(leaderboard) {
                     top.linkTo(buttonSubmit.top)
                     start.linkTo(parent.start)
-                    end.linkTo(parent.end)
 
                 }
         ) {
@@ -592,9 +600,9 @@ fun RoleGuruScreen(
     }
 }
 
-suspend fun submitData(question: String, true_answer: String, context: Context) {
+suspend fun submitData(token_soal: String, question: String, true_answer: String, context: Context) {
     try {
-        val response = ApiClient.apiService.dataGuru(GuruRequest(question, true_answer))
+        val response = ApiClient.apiService.dataGuru(GuruRequest(token_soal, question, true_answer))
         if (response.isSuccessful) {
             val message = response.body()?.message ?: "Data Submited"
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
@@ -607,9 +615,9 @@ suspend fun submitData(question: String, true_answer: String, context: Context) 
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun RoleGuruScreenPrev() {
-    RoleGuruScreen(modifier = Modifier, calculatorViewModel = CalculatorViewModel(), rememberNavController())
-
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun RoleGuruScreenPrev() {
+//    RoleGuruScreen(modifier = Modifier, calculatorViewModel = CalculatorViewModel(), navController = reme)
+//
+//}

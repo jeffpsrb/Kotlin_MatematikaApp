@@ -75,4 +75,6 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     val nav_version = "2.7.7"
     implementation("androidx.navigation:navigation-compose:$nav_version")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
+
 }

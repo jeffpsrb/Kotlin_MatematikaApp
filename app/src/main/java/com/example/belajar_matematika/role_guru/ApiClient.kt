@@ -30,9 +30,13 @@ interface ApiService {
     @GET("leaderboard")
     suspend fun getLeaderboard () : Response<LeaderboardResponse>
 
+    @GET("token")
+    suspend fun getToken (): Response<TokenResponse>
+
 }
 
 data class GuruRequest(
+    val token_soal: String,
     val question: String,
     val true_answer: String
 )
@@ -41,9 +45,15 @@ data class LeaderboardResponse(
     @SerializedName("response") val response :List<LeaderboardData>
 
 )
-
 data class LeaderboardData(
     @SerializedName("identitas_siswa") val identitasSiswa: String
+)
+
+data class  TokenResponse(
+    @SerializedName("response") val responseToken: List<TokenData>
+)
+data class TokenData(
+    @SerializedName("token_soal") val tokenSoal:String
 )
 data class GuruResponse(
     val message: String

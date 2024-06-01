@@ -12,6 +12,7 @@ import com.example.belajar_matematika.role_guru.CalculatorViewModel
 import com.example.belajar_matematika.role_guru.LeaderboardScreen
 import com.example.belajar_matematika.role_guru.LeaderboardViewModel
 import com.example.belajar_matematika.role_guru.RoleGuruScreen
+import com.example.belajar_matematika.role_guru.TokenScreen
 
 @Composable
 fun SetUpNavGraph(
@@ -29,24 +30,40 @@ fun SetUpNavGraph(
         composable(
             route = Screen.Siswa.route
         ) {
-            SiswaScreen(navController = navController)
+            val tokenViewModel = viewModel<TokenViewModel>()
+           SiswaScreen(viewModel = tokenViewModel, navController = navController )
         }
         composable(
             route = Screen.Canvas.route,
             arguments = listOf(
                 navArgument("identitas") {
                     type = NavType.StringType
+                },
+                navArgument("token") {
+                    type = NavType.StringType
                 }
             )
         ) {
             val identitas = it.arguments?.getString("identitas") ?: ""
-            CanvasSiswa(navController = navController, identitas = identitas)
+            val token = it.arguments?.getString("token") ?: ""
+            CanvasSiswa(identitas = identitas, token = token, navController)
         }
         composable(
-            route = Screen.Guru.route
+            route = Screen.Token.route
         ) {
+           TokenScreen(navController)
+        }
+        composable(
+            route = Screen.Guru.route,
+            arguments = listOf(
+                navArgument("token") {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            val token = it.arguments?.getString("token") ?: ""
             val calculatorViewModel = viewModel<CalculatorViewModel>()
-            RoleGuruScreen(modifier = Modifier, calculatorViewModel = calculatorViewModel, navController)
+            RoleGuruScreen(modifier = Modifier, calculatorViewModel = calculatorViewModel, navController, token)
         }
         composable(
             route = Screen.Leaderboard.route
