@@ -60,7 +60,7 @@ data class Line(
     val start: Offset,
     val end: Offset,
     val color: Color = Color.White,
-    val strokeWidth: Dp = 10.dp
+    val strokeWidth: Dp = 20.dp
 )
 
 
@@ -183,13 +183,6 @@ fun CanvasSiswa(
                 onClick = {
                     if (!isDataSent) {
                         val byteArray = convertCanvasToJpg(lines)
-    //                        if (byteArray != null) {
-    //                            // Jika berhasil, lakukan sesuatu dengan byteArray
-    //                            saveImageToGallery(context, byteArray, "gambar_$identitas.jpg")
-    //                        } else {
-    //                            // Jika gagal, lakukan sesuatu dengan kesalahan
-    //                            Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
-    //                        }
                         if(byteArray != null) {
                             val imageMedia = "image/jpeg".toMediaTypeOrNull()
                             val imageRequestBody = byteArray.toRequestBody(imageMedia)
@@ -259,48 +252,6 @@ fun convertCanvasToJpg(lines: List<Line>): ByteArray {
                 strokeCap = android.graphics.Paint.Cap.ROUND
             }
         )
-//    var maxX = Int.MIN_VALUE
-//    var maxY = Int.MIN_VALUE
-//    var minX = Int.MAX_VALUE
-//    var minY = Int.MAX_VALUE
-//
-//    lines.forEach { line ->
-//        if (line.start.x > maxX) maxX = line.start.x.toInt()
-//        if (line.start.y > maxY) maxY = line.start.y.toInt()
-//        if (line.end.x > maxX) maxX = line.end.x.toInt()
-//        if (line.end.y > maxY) maxY = line.end.y.toInt()
-//
-//        if (line.start.x < minX) minX = line.start.x.toInt()
-//        if (line.start.y < minY) minY = line.start.y.toInt()
-//        if (line.end.x < minX) minX = line.end.x.toInt()
-//        if (line.end.y < minY) minY = line.end.y.toInt()
-//    }
-//
-//    // Menambahkan beberapa margin agar tidak terpotong
-//    val margin = 10
-//    minX -= margin
-//    minY -= margin
-//    maxX += margin
-//    maxY += margin
-//
-//    val width = (maxX - minX).coerceAtLeast(0)
-//    val height = (maxY - minY).coerceAtLeast(0)
-//
-//    // Membuat gambar bitmap dari canvas dengan ukuran sesuai
-//    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-//    val canvas = Canvas(bitmap)
-//    lines.forEach { line ->
-//        canvas.drawLine(
-//            line.start.x - minX.toFloat(),
-//            line.start.y - minY.toFloat(),
-//            line.end.x - minX.toFloat(),
-//            line.end.y - minY.toFloat(),
-//            android.graphics.Paint().apply {
-//                color = line.color.toArgb()
-//                strokeWidth = line.strokeWidth.value
-//                strokeCap = android.graphics.Paint.Cap.ROUND
-//            }
-//        )
     }
 
 
@@ -311,19 +262,7 @@ fun convertCanvasToJpg(lines: List<Line>): ByteArray {
 
 }
 
-//fun saveImageToInternalStorage(context: Context, byteArray: ByteArray): Boolean {
-//    return try {
-//        val filename = "gambar.jpg"
-//        val fileOutputStream: FileOutputStream =
-//            context.openFileOutput(filename, Context.MODE_PRIVATE)
-//        fileOutputStream.write(byteArray)
-//        fileOutputStream.close()
-//        true
-//    } catch (e: Exception) {
-//        e.printStackTrace()
-//        false
-//    }
-//}
+
 
 fun saveImageToGallery(context: Context, byteArray: ByteArray, fileName: String) {
     val contentValues = ContentValues().apply {
