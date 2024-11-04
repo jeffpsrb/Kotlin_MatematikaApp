@@ -38,6 +38,7 @@ android {
     }
     buildFeatures {
         compose = true
+        mlModelBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
@@ -63,6 +64,9 @@ dependencies {
     implementation("androidx.navigation:navigation-runtime-ktx:2.7.7")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+    implementation("org.tensorflow:tensorflow-lite-support:0.1.0")
+    implementation("org.tensorflow:tensorflow-lite-metadata:0.1.0")
+    implementation("org.tensorflow:tensorflow-lite-gpu:2.3.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
@@ -76,5 +80,8 @@ dependencies {
     val nav_version = "2.7.7"
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
+    implementation("org.opencv:opencv:4.10.0-kleidicv")
+//    implementation ("org.tensorflow:tensorflow-lite-task-vision-play-services:0.4.2")
+//    implementation ("com.google.android.gms:play-services-tflite-gpu:16.1.0")
 
 }

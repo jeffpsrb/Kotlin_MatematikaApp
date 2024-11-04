@@ -44,9 +44,10 @@ fun SetUpNavGraph(
                 }
             )
         ) {
+            val digitClassifier = DigitClassifier(navController.context)
             val identitas = it.arguments?.getString("identitas") ?: ""
             val token = it.arguments?.getString("token") ?: ""
-            CanvasSiswa(identitas = identitas, token = token, navController)
+            CanvasSiswa(identitas = identitas, token = token, navController, digitClassifier = digitClassifier)
         }
         composable(
             route = Screen.Token.route

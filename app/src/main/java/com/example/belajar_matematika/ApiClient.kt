@@ -11,7 +11,7 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 
 object ApiClient {
-    private const val BASE_URL = "http://192.168.166.90:3000/api/role_siswa/"
+    private const val BASE_URL = "http://192.168.100.159:3000/api/role_siswa/"
 
     val apiService:ApiService by lazy {
         val retrofit = Retrofit.Builder()

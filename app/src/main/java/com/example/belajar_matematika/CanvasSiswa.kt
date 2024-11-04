@@ -41,12 +41,10 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.belajar_matematika.ui.theme.GuruColor
 import com.example.belajar_matematika.ui.theme.SecondaryColor
 import kotlinx.coroutines.launch
@@ -54,13 +52,16 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.opencv.android.Utils
+import org.opencv.core.Mat
+import org.opencv.imgproc.Imgproc
 import java.io.ByteArrayOutputStream
 
 data class Line(
     val start: Offset,
     val end: Offset,
     val color: Color = Color.White,
-    val strokeWidth: Dp = 20.dp
+    val strokeWidth: Dp = 33.dp
 )
 
 
@@ -68,7 +69,8 @@ data class Line(
 fun CanvasSiswa(
     identitas: String,
     token: String,
-    navController: NavController
+    navController: NavController,
+    digitClassifier: DigitClassifier
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -199,6 +201,23 @@ fun CanvasSiswa(
                     } else {
                         Toast.makeText(context, "Data has been sent already", Toast.LENGTH_SHORT).show()
                     }
+                    val bitmap = convertLinesToBitmap(lines, 948, 942)
+                    val mat = BitmapToMat(bitmap)
+                    val preprocessed = ImageProcessor()
+                    val contours = preprocessed.findContours(bitmap)
+                    val sortedContours = contours.sortedBy { contour ->
+                        Imgproc.boundingRect(contour).x
+                    }
+                    val result = sortedContours.map { contour ->
+                        val react = Imgproc.boundingRect(contour)
+                        val digitMat = Mat(mat, react)
+                        val preprocessedDigit = preprocessed.preprocessImage(digitMat)
+                        digitClassifier.performInference(preprocessedDigit)
+                    }
+
+                    val predictionsString = result.joinToString(separator = "") { it.toString() }
+                    Toast.makeText(context, "Predicted digits: $predictionsString", Toast.LENGTH_SHORT).show()
+
 
                 },
                 shape = RoundedCornerShape(20.dp),
@@ -291,13 +310,31 @@ fun saveImageToGallery(context: Context, byteArray: ByteArray, fileName: String)
         Toast.makeText(context, "Gambar disimpan di galeri", Toast.LENGTH_SHORT).show()
     } ?: Toast.makeText(context, "Gagal menyimpan gambar", Toast.LENGTH_SHORT).show()
 }
-
-
-@Preview(showBackground = true)
-@Composable
-fun CanvasSiswaPrev() {
-    CanvasSiswa(identitas = "jeff", token = "tqyu5", navController = rememberNavController())
+fun convertLinesToBitmap(lines: List<Line>, width: Int, height: Int): Bitmap {
+    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    lines.forEach { line ->
+        canvas.drawLine(
+            line.start.x,
+            line.start.y,
+            line.end.x,
+            line.end.y,
+            android.graphics.Paint().apply {
+                color = line.color.toArgb()
+                strokeWidth = line.strokeWidth.value
+                strokeCap = android.graphics.Paint.Cap.ROUND
+            }
+        )
+    }
+    return bitmap
 }
+fun BitmapToMat(bitmap: Bitmap): Mat {
+    val mat = Mat()
+    Utils.bitmapToMat(bitmap, mat)
+    Imgproc.cvtColor(mat, mat, Imgproc.COLOR_RGBA2GRAY) // Mengonversi gambar ke grayscale
+    return mat
+}
+
 
 
 

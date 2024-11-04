@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.rememberNavController
 import com.example.belajar_matematika.ui.theme.BelajarMatematikaTheme
+import org.opencv.android.OpenCVLoader
 
 
 class MainActivity : ComponentActivity() {
@@ -17,6 +18,12 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if(!OpenCVLoader.initDebug()) {
+            return
+        }
+
+
         setContent {
             BelajarMatematikaTheme {
                 // A surface container using the 'background' color from the theme

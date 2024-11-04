@@ -615,9 +615,3 @@ suspend fun submitData(token_soal: String, question: String, true_answer: String
 }
 
 
-//@Preview(showBackground = true)
-//@Composable
-//fun RoleGuruScreenPrev() {
-//    RoleGuruScreen(modifier = Modifier, calculatorViewModel = CalculatorViewModel(), navController = reme)
-//
-//}
